@@ -158,9 +158,40 @@ a { color: inherit; }
 }
 .card[hidden] { display: none; }
 .card-title { font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 1.12rem; margin: 0 0 8px; }
-.card-body { font-size: 1rem; }
-.card-body p { margin: 0 0 .7em; }
-.card-body p:last-child { margin-bottom: 0; }
+.card-body {
+  font-size: 1rem; line-height: 1.55;
+  position: relative;                 /* anchor for the … overlay */
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; line-clamp: 3;
+  overflow: hidden;
+  height: calc(1.55em * 3);           /* exactly 3 lines → all bodies equal height */
+}
+.card-body p { margin: 0; }           /* collapsed: no inter-paragraph gap so 3 lines == height */
+
+/* "…" expander: overlaid at the end of line 3, so it adds NO height (cards stay identical) */
+.card-more {
+  position: absolute; right: 0; bottom: 0;
+  border: 0; cursor: pointer; font: inherit; font-weight: 700;
+  line-height: 1.55; color: var(--accent); padding: 0 0 0 28px;
+  background: linear-gradient(to right, transparent, var(--surface) 45%);
+}
+.card-more:hover { text-decoration: underline; }
+
+/* one-line titles on grid cards keep heights uniform; single page can wrap */
+.card:not(.card-single) .card-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card:not(.card-single) .card-title a { color: inherit; text-decoration: none; }
+.card:not(.card-single) .card-title a:hover { color: var(--accent); }
+
+/* expanded card & the single-joke page show full text, natural height */
+.card.is-expanded .card-body,
+.card-single .card-body {
+  display: block; height: auto; overflow: visible;
+  -webkit-line-clamp: unset; line-clamp: unset;
+}
+.card.is-expanded .card-body p,
+.card-single .card-body p { margin: 0 0 .7em; }
+.card.is-expanded .card-body p:last-child,
+.card-single .card-body p:last-child { margin-bottom: 0; }
 .card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
 .tag {
   font: inherit; font-size: .76rem; font-weight: 600; cursor: pointer;

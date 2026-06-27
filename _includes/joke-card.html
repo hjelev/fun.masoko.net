@@ -1,6 +1,6 @@
 {%- assign j = include.joke -%}
 <article class="card" data-cat="{{ j.category }}">
-  {% if j.title and j.title != "Виц" %}<h2 class="card-title">{{ j.title }}</h2>{% endif %}
+  {% if j.title and j.title != "Виц" %}<h2 class="card-title"><a href="{{ j.url | relative_url }}">{{ j.title }}</a></h2>{% endif %}
   <div class="card-body">{{ j.content | markdownify }}</div>
   <div class="card-meta">
     <a class="tag" href="{{ '/c/' | append: j.category | append: '/' | relative_url }}">{{ j.category_name }}</a>

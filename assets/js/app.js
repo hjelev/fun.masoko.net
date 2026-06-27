@@ -52,7 +52,7 @@
   // Mirrors _includes/joke-card.html so search results look identical.
   function cardHtml(j) {
     var title = (j.title && j.title !== "Виц")
-      ? '<h2 class="card-title">' + escapeHtml(j.title) + "</h2>" : "";
+      ? '<h2 class="card-title"><a href="' + escapeHtml(j.url) + '">' + escapeHtml(j.title) + "</a></h2>" : "";
     var tags = (j.tags || []).map(function (t) {
       return '<span class="tag tag-plain">#' + escapeHtml(t) + "</span>";
     }).join("");
@@ -64,6 +64,27 @@
         tags +
         '<a class="permalink" href="' + escapeHtml(j.url) + '" title="Връзка към този виц" aria-label="Постоянна връзка">#</a>' +
       "</div></article>";
+  }
+
+  // Add a "…" expander to any clamped card whose text overflows 3 lines.
+  function setupClamp(scope) {
+    var cards = (scope || document).querySelectorAll(".card:not(.card-single)");
+    Array.prototype.forEach.call(cards, function (card) {
+      var body = card.querySelector(".card-body");
+      if (!body || card.classList.contains("is-expanded")) return;
+      if (body.querySelector(".card-more")) return;
+      if (body.scrollHeight - body.clientHeight <= 1) return;
+      var btn = document.createElement("button");
+      btn.className = "card-more";
+      btn.type = "button";
+      btn.setAttribute("aria-label", "Прочети целия виц");
+      btn.textContent = "…";
+      btn.addEventListener("click", function () {
+        card.classList.add("is-expanded");
+        btn.remove();
+      });
+      body.appendChild(btn);
+    });
   }
 
   function showBrowse() {
@@ -90,6 +111,7 @@
       if (results) {
         results.hidden = false;
         results.innerHTML = matches.map(cardHtml).join("");
+        setupClamp(results);
       }
       if (empty) empty.hidden = matches.length !== 0;
       if (status) status.textContent = matches.length + " " + plural(matches.length);
@@ -110,4 +132,9 @@
       });
     });
   }
+
+  /* ---------- Clamp jokes to 3 lines with a "…" expander ---------- */
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
+    setupClamp(document);
+  });
 })();
