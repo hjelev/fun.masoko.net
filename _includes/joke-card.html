@@ -1,0 +1,10 @@
+{%- assign j = include.joke -%}
+<article class="card" data-cat="{{ j.category }}">
+  {% if j.title and j.title != "Виц" %}<h2 class="card-title">{{ j.title }}</h2>{% endif %}
+  <div class="card-body">{{ j.content | markdownify }}</div>
+  <div class="card-meta">
+    <a class="tag" href="{{ '/c/' | append: j.category | append: '/' | relative_url }}">{{ j.category_name }}</a>
+    {% for t in j.tags %}<span class="tag tag-plain">#{{ t }}</span>{% endfor %}
+    <a class="permalink" href="{{ j.url | relative_url }}" title="Връзка към този виц" aria-label="Постоянна връзка">#</a>
+  </div>
+</article>

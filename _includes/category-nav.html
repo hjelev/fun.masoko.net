@@ -1,0 +1,11 @@
+{%- assign groups = site.jokes | group_by: "category" -%}
+{%- assign order = "family,others,adults,work,ivancho,school" | split: "," -%}
+<nav class="chips" aria-label="Категории">
+  <a class="chip{% unless page.category %} is-active{% endunless %}" href="{{ '/' | relative_url }}">Всички <span class="count">{{ site.jokes | size }}</span></a>
+  {% for slug in order %}
+    {%- assign g = groups | where: "name", slug | first -%}
+    {% if g %}
+    <a class="chip{% if page.category == slug %} is-active{% endif %}" href="{{ '/c/' | append: slug | append: '/' | relative_url }}">{{ g.items[0].category_name }} <span class="count">{{ g.items | size }}</span></a>
+    {% endif %}
+  {% endfor %}
+</nav>

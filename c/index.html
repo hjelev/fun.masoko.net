@@ -1,0 +1,27 @@
+---
+layout: default
+permalink: /c/
+title: "Категории"
+---
+{%- assign groups = site.jokes | group_by: "category" -%}
+{%- assign order = "family,others,adults,work,ivancho,school" | split: "," -%}
+<section class="hero">
+  <div class="wrap">
+    <p class="back"><a href="{{ '/' | relative_url }}">← Всички вицове</a></p>
+    <h1 class="hero-title">Категории</h1>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="grid">
+    {% for slug in order %}
+      {%- assign g = groups | where: "name", slug | first -%}
+      {% if g %}
+      <a class="card cat-card" href="{{ '/c/' | append: slug | append: '/' | relative_url }}">
+        <h2 class="card-title">{{ g.items[0].category_name }}</h2>
+        <p class="cat-count">{{ g.items | size }} вица</p>
+      </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>

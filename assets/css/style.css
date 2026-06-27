@@ -129,6 +129,7 @@ a { color: inherit; }
   cursor: pointer; border: 1px solid var(--border); background: var(--surface);
   color: var(--text); padding: 7px 13px; border-radius: 999px;
   font-size: .9rem; font-weight: 500; transition: all .15s;
+  text-decoration: none; display: inline-flex; align-items: baseline;
 }
 .chip:hover { background: var(--surface-2); }
 .chip .count { color: var(--muted); font-size: .8rem; margin-left: 3px; }
@@ -171,6 +172,28 @@ a { color: inherit; }
 .permalink:hover { opacity: 1; color: var(--accent); }
 
 .empty { text-align: center; color: var(--muted); padding: 60px 0; font-size: 1.05rem; }
+
+/* ============ Pagination ============ */
+.pagination {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: 6px; padding: 8px 0 56px;
+}
+.page-link {
+  min-width: 40px; padding: 8px 12px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font-size: .92rem; font-weight: 600; text-align: center; text-decoration: none;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.page-link:hover { background: var(--surface-2); border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); }
+.page-link.is-current { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.page-link.is-disabled { color: var(--muted); opacity: .5; pointer-events: none; }
+.page-edge { font-weight: 600; }
+.page-ellipsis { color: var(--muted); padding: 0 2px; }
+
+/* ============ Categories overview ============ */
+.cat-card { text-decoration: none; display: block; }
+.cat-card:hover .card-title { color: var(--accent); }
+.cat-count { color: var(--muted); font-size: .9rem; margin: 0; }
 
 /* ============ Single joke page ============ */
 .back a { color: var(--muted); text-decoration: none; font-size: .9rem; }

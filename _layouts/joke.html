@@ -7,7 +7,7 @@ layout: default
     <h1 class="card-title">{{ page.title }}</h1>
     <div class="card-body">{{ content }}</div>
     <div class="card-meta">
-      <a class="tag" href="{{ '/' | relative_url }}?cat={{ page.category }}">{{ page.category_name }}</a>
+      <a class="tag" href="{{ '/c/' | append: page.category | append: '/' | relative_url }}">{{ page.category_name }}</a>
       {% for t in page.tags %}<span class="tag tag-plain">#{{ t }}</span>{% endfor %}
     </div>
   </article>

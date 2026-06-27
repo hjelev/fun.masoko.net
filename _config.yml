@@ -20,6 +20,21 @@ collections:
 plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-paginate-v2
+
+# Pagination (jekyll-paginate-v2). Pages opt in with `pagination: { enabled: true }`
+# in their front matter; these are the inherited defaults.
+pagination:
+  enabled: true
+  collection: jokes
+  per_page: 10
+  permalink: "/page/:num/"
+  sort_field: "date"
+  sort_reverse: true
+  # Window of numbered page links shown around the current page.
+  trail:
+    before: 2
+    after: 2
 
 sass:
   style: compressed
@@ -43,3 +58,4 @@ exclude:
   - Gemfile.lock
   - vendor/
   - convert.py
+  - funmasokonet.github.io/

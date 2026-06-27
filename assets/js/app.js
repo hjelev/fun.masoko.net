@@ -24,123 +24,90 @@
     });
   }
 
-  /* ---------- Search + category filtering ---------- */
+  /* ---------- Search index (loaded on demand) ---------- */
   var search = document.getElementById("search");
   var grid   = document.getElementById("grid");
+  var results = document.getElementById("results");
   var status = document.getElementById("status");
   var empty  = document.getElementById("empty");
-  var chips  = document.getElementById("chips");
-  if (!grid) return;
+  var pager  = document.querySelector(".pagination");
+  var randomBtn = document.getElementById("random");
 
-  var cards = Array.prototype.slice.call(grid.querySelectorAll(".card"));
-  var state = { q: "", cat: "all", random: null };
+  var indexPromise = null;
+  function loadIndex() {
+    if (indexPromise) return indexPromise;
+    var url = (search && search.getAttribute("data-index")) || "/search.json";
+    indexPromise = fetch(url).then(function (r) { return r.json(); });
+    return indexPromise;
+  }
 
-  function normalize(s) { return (s || "").toLowerCase().trim(); }
+  function plural(n) { return n === 1 ? "виц" : "вица"; }
 
-  function apply() {
-    var q = normalize(state.q);
-    var terms = q ? q.split(/\s+/) : [];
-    var shown = 0;
-
-    cards.forEach(function (card) {
-      var visible;
-      if (state.random) {
-        visible = card === state.random;
-      } else {
-        var okCat = state.cat === "all" || card.getAttribute("data-cat") === state.cat;
-        var hay = card.getAttribute("data-search") || "";
-        var okQ = terms.every(function (t) { return hay.indexOf(t) !== -1; });
-        visible = okCat && okQ;
-      }
-      card.hidden = !visible;
-      if (visible) shown++;
+  function escapeHtml(s) {
+    return (s || "").replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
-
-    empty.hidden = shown !== 0 || !!state.random;
-
-    if (state.random) {
-      status.textContent = "";
-    } else if (q || state.cat !== "all") {
-      status.textContent = shown + " " + plural(shown);
-    } else {
-      status.textContent = "";
-    }
   }
 
-  function plural(n) {
-    return n === 1 ? "виц" : "вица";
+  // Mirrors _includes/joke-card.html so search results look identical.
+  function cardHtml(j) {
+    var title = (j.title && j.title !== "Виц")
+      ? '<h2 class="card-title">' + escapeHtml(j.title) + "</h2>" : "";
+    var tags = (j.tags || []).map(function (t) {
+      return '<span class="tag tag-plain">#' + escapeHtml(t) + "</span>";
+    }).join("");
+    return '<article class="card" data-cat="' + escapeHtml(j.category) + '">' +
+      title +
+      '<div class="card-body">' + j.html + "</div>" +
+      '<div class="card-meta">' +
+        '<a class="tag" href="/c/' + encodeURIComponent(j.category) + '/">' + escapeHtml(j.category_name) + "</a>" +
+        tags +
+        '<a class="permalink" href="' + escapeHtml(j.url) + '" title="Връзка към този виц" aria-label="Постоянна връзка">#</a>' +
+      "</div></article>";
   }
 
-  function setActiveChip(cat) {
-    if (!chips) return;
-    chips.querySelectorAll(".chip").forEach(function (c) {
-      c.classList.toggle("is-active", c.getAttribute("data-cat") === cat);
+  function showBrowse() {
+    if (results) { results.hidden = true; results.innerHTML = ""; }
+    if (grid)  grid.hidden = false;
+    if (pager) pager.hidden = false;
+    if (empty) empty.hidden = true;
+    if (status) status.textContent = "";
+  }
+
+  function runSearch(raw) {
+    var q = (raw || "").toLowerCase().trim();
+    if (!q) { showBrowse(); return; }
+    loadIndex().then(function (idx) {
+      // Guard against an out-of-date callback if the box was cleared meanwhile.
+      if (search && search.value.toLowerCase().trim() !== q) return;
+      var terms = q.split(/\s+/);
+      var matches = idx.filter(function (j) {
+        var hay = j.search || "";
+        return terms.every(function (t) { return hay.indexOf(t) !== -1; });
+      });
+      if (grid)  grid.hidden = true;
+      if (pager) pager.hidden = true;
+      if (results) {
+        results.hidden = false;
+        results.innerHTML = matches.map(cardHtml).join("");
+      }
+      if (empty) empty.hidden = matches.length !== 0;
+      if (status) status.textContent = matches.length + " " + plural(matches.length);
     });
   }
 
   if (search) {
-    search.addEventListener("input", function () {
-      state.q = search.value;
-      state.random = null;
-      apply();
-    });
+    search.addEventListener("input", function () { runSearch(search.value); });
   }
 
-  if (chips) {
-    chips.addEventListener("click", function (e) {
-      var chip = e.target.closest(".chip");
-      if (!chip) return;
-      state.cat = chip.getAttribute("data-cat");
-      state.random = null;
-      setActiveChip(state.cat);
-      apply();
-    });
-  }
-
-  // Click a category tag inside a card to filter by it.
-  grid.addEventListener("click", function (e) {
-    var tag = e.target.closest(".tag[data-cat]");
-    if (!tag) return;
-    e.preventDefault();
-    state.cat = tag.getAttribute("data-cat");
-    state.q = ""; if (search) search.value = "";
-    state.random = null;
-    setActiveChip(state.cat);
-    apply();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  /* ---------- Random joke ---------- */
-  var randomBtn = document.getElementById("random");
+  /* ---------- Random joke: jump to a random joke page ---------- */
   if (randomBtn) {
     randomBtn.addEventListener("click", function () {
-      // pick from cards matching the current category (ignoring the search box)
-      var pool = cards.filter(function (c) {
-        return state.cat === "all" || c.getAttribute("data-cat") === state.cat;
+      loadIndex().then(function (idx) {
+        if (!idx.length) return;
+        var pick = idx[Math.floor(Math.random() * idx.length)];
+        window.location.href = pick.url;
       });
-      if (!pool.length) pool = cards;
-      var pick = pool[Math.floor(Math.random() * pool.length)];
-
-      state.random = null;
-      state.q = ""; if (search) search.value = "";
-      apply(); // show the full (category-filtered) list again
-
-      pick.hidden = false;
-      pick.classList.remove("flash");
-      void pick.offsetWidth; // restart animation
-      pick.classList.add("flash");
-      pick.scrollIntoView({ behavior: "smooth", block: "center" });
     });
   }
-
-  /* ---------- Honor ?cat=<slug> from permalinks ---------- */
-  try {
-    var p = new URLSearchParams(window.location.search).get("cat");
-    if (p) {
-      var exists = chips && chips.querySelector('.chip[data-cat="' + p + '"]');
-      if (exists) { state.cat = p; setActiveChip(p); }
-    }
-  } catch (e) {}
-
-  apply();
 })();

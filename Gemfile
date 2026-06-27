@@ -1,12 +1,13 @@
 source "https://rubygems.org"
 
-# Use the github-pages gem so a local build matches GitHub Pages exactly.
-gem "github-pages", group: :jekyll_plugins
+# Built with Jekyll directly (via GitHub Actions) so we can use plugins that
+# the classic GitHub Pages builder does not allow — notably jekyll-paginate-v2.
+gem "jekyll", "~> 4.3"
 
-# Plugins used by the site
 group :jekyll_plugins do
   gem "jekyll-sitemap"
   gem "jekyll-seo-tag"
+  gem "jekyll-paginate-v2"
 end
 
 # Windows / JRuby compatibility shims (harmless elsewhere)

@@ -1,0 +1,37 @@
+{% if paginator.total_pages > 1 %}
+<nav class="pagination" aria-label="Страници">
+  {% if paginator.previous_page %}
+    <a class="page-link page-edge" href="{{ paginator.previous_page_path | relative_url }}" rel="prev" aria-label="Предишна страница">‹ Назад</a>
+  {% else %}
+    <span class="page-link page-edge is-disabled" aria-hidden="true">‹ Назад</span>
+  {% endif %}
+
+  {% comment %} Show the first page + leading ellipsis when the trail starts past page 1. {% endcomment %}
+  {% assign first_trail = paginator.page_trail | first %}
+  {% if first_trail.num > 1 %}
+    <a class="page-link" href="{{ '/' | relative_url }}" aria-label="Страница 1">1</a>
+    {% if first_trail.num > 2 %}<span class="page-ellipsis" aria-hidden="true">…</span>{% endif %}
+  {% endif %}
+
+  {% for trail in paginator.page_trail %}
+    {% if trail.num == paginator.page %}
+      <span class="page-link is-current" aria-current="page">{{ trail.num }}</span>
+    {% else %}
+      <a class="page-link" href="{{ trail.path | relative_url }}" title="{{ trail.title }}">{{ trail.num }}</a>
+    {% endif %}
+  {% endfor %}
+
+  {% comment %} Trailing ellipsis + last page when the trail ends before the final page. {% endcomment %}
+  {% assign last_trail = paginator.page_trail | last %}
+  {% if last_trail.num < paginator.total_pages %}
+    {% if last_trail.num < paginator.total_pages | minus: 1 %}<span class="page-ellipsis" aria-hidden="true">…</span>{% endif %}
+    <a class="page-link" href="{{ paginator.last_path | relative_url }}" aria-label="Страница {{ paginator.total_pages }}">{{ paginator.total_pages }}</a>
+  {% endif %}
+
+  {% if paginator.next_page %}
+    <a class="page-link page-edge" href="{{ paginator.next_page_path | relative_url }}" rel="next" aria-label="Следваща страница">Напред ›</a>
+  {% else %}
+    <span class="page-link page-edge is-disabled" aria-hidden="true">Напред ›</span>
+  {% endif %}
+</nav>
+{% endif %}
