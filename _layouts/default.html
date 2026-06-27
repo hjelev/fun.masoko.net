@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="{{ site.lang | default: 'bg' }}">
+{% include head.html %}
+<body>
+  <a class="skip-link" href="#main">Към съдържанието</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="{{ '/' | relative_url }}">
+        <img class="brand-logo" src="{{ '/assets/images/logo.png' | relative_url }}" alt="" width="40" height="40">
+        <span class="brand-text">
+          <span class="brand-name">{{ site.title }}</span>
+          <span class="brand-tag">{{ site.tagline }}</span>
+        </span>
+      </a>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Смяна на тема" title="Светъл / тъмен режим">
+        <svg class="i-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><g stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.5" y1="4.5" x2="6.6" y2="6.6"/><line x1="17.4" y1="17.4" x2="19.5" y2="19.5"/><line x1="4.5" y1="19.5" x2="6.6" y2="17.4"/><line x1="17.4" y1="6.6" x2="19.5" y2="4.5"/></g></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a7 7 0 1 0 10.5 10.5Z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    {{ content }}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>{{ site.jokes | size }} вица · <a href="https://github.com/funmasokonet/funmasokonet.github.io">Източник</a> · GPLv3</p>
+    </div>
+  </footer>
+
+  <script src="{{ '/assets/js/app.js' | relative_url }}" defer></script>
+</body>
+</html>

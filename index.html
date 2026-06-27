@@ -1,0 +1,50 @@
+---
+layout: default
+---
+{% assign jokes = site.jokes | sort: "date" | reverse %}
+{% assign groups = site.jokes | group_by: "category" %}
+{% assign order = "family,others,adults,work,ivancho,school" | split: "," %}
+
+<section class="hero">
+  <div class="wrap">
+    <h1 class="hero-title">{{ site.tagline }}</h1>
+
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      <input id="search" type="search" inputmode="search" autocomplete="off"
+             placeholder="Търси във всички вицове…" aria-label="Търсене на вицове">
+      <button id="random" class="btn-random" type="button" title="Случаен виц">🎲 Случаен</button>
+    </div>
+
+    <div class="chips" id="chips" role="tablist" aria-label="Категории">
+      <button class="chip is-active" data-cat="all" type="button">Всички <span class="count">{{ site.jokes | size }}</span></button>
+      {% for slug in order %}
+        {% assign g = groups | where: "name", slug | first %}
+        {% if g %}
+        <button class="chip" data-cat="{{ slug }}" type="button">{{ g.items[0].category_name }} <span class="count">{{ g.items | size }}</span></button>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <p id="status" class="result-status" aria-live="polite"></p>
+
+  <div id="grid" class="grid">
+    {% for j in jokes %}
+      {%- capture searchtext -%}{{ j.title }} {{ j.category_name }} {{ j.tags | join: " " }} {{ j.content | markdownify | strip_html }}{%- endcapture -%}
+      <article class="card" data-cat="{{ j.category }}" data-search="{{ searchtext | downcase | strip_newlines | escape }}">
+        {% if j.title and j.title != "Виц" %}<h2 class="card-title">{{ j.title }}</h2>{% endif %}
+        <div class="card-body">{{ j.content | markdownify }}</div>
+        <div class="card-meta">
+          <button class="tag" type="button" data-cat="{{ j.category }}">{{ j.category_name }}</button>
+          {% for t in j.tags %}<span class="tag tag-plain">#{{ t }}</span>{% endfor %}
+          <a class="permalink" href="{{ j.url | relative_url }}" title="Връзка към този виц" aria-label="Постоянна връзка">#</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+
+  <p id="empty" class="empty" hidden>Няма намерени вицове. Опитай друга дума.</p>
+</div>

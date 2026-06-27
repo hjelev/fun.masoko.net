@@ -1,0 +1,15 @@
+---
+layout: default
+---
+<div class="wrap narrow">
+  <p class="back"><a href="{{ '/' | relative_url }}">← Всички вицове</a></p>
+  <article class="card card-single">
+    <h1 class="card-title">{{ page.title }}</h1>
+    <div class="card-body">{{ content }}</div>
+    <div class="card-meta">
+      <a class="tag" href="{{ '/' | relative_url }}?cat={{ page.category }}">{{ page.category_name }}</a>
+      {% for t in page.tags %}<span class="tag tag-plain">#{{ t }}</span>{% endfor %}
+    </div>
+  </article>
+  <p class="back"><a href="{{ '/' | relative_url }}">← Всички вицове</a></p>
+</div>

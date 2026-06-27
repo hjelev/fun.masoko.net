@@ -1,0 +1,45 @@
+title: fun.masoko.net
+tagline: Подбрани вицове и мъдри мисли!
+description: Колекция от подбрани български вицове — със светъл/тъмен режим и мигновено търсене.
+lang: bg
+url: "https://fun.masoko.net"
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+permalink: /j/:name/
+
+collections:
+  jokes:
+    output: true
+    permalink: /j/:name/
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+sass:
+  style: compressed
+
+# Keep the old Pelican source out of the generated site
+exclude:
+  - content/
+  - themes/
+  - api/
+  - web-add/
+  - plugins/
+  - Makefile
+  - fabfile.py
+  - develop_server.sh
+  - update.sh
+  - pelicanconf.py
+  - publishconf.py
+  - "*.pid"
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - convert.py
