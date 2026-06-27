@@ -59,3 +59,5 @@ exclude:
   - vendor/
   - convert.py
   - funmasokonet.github.io/
+  - worker/
+  - wrangler.toml

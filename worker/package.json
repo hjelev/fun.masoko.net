@@ -1,0 +1,14 @@
+{
+  "name": "fun-masoko-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker that turns joke-form submissions into GitHub PRs",
+  "comment": "Config is the repo-root wrangler.toml. Run wrangler from the repo root.",
+  "scripts": {
+    "dev": "cd .. && wrangler dev",
+    "deploy": "cd .. && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

@@ -1,0 +1,18 @@
+name = "fun-masoko-worker"
+main = "worker/src/index.js"
+compatibility_date = "2026-06-27"
+account_id = "ca20e2fc1b5e9c667710a2360ba40a68"
+
+# Read by worker/src/index.js. Without REPO the worker cannot open the PR.
+[vars]
+ALLOWED_ORIGIN = "https://fun.masoko.net"
+REPO = "hjelev/fun.masoko.net"
+BASE_BRANCH = "master"
+
+[[kv_namespaces]]
+binding = "RATELIMIT"
+id = "1e39462b549643e7a9015fe064f8bfcd"
+
+# Secrets are NOT stored here. Set them once (per worker name) with:
+#   wrangler secret put GITHUB_TOKEN
+#   wrangler secret put TURNSTILE_SECRET

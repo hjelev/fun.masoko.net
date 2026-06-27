@@ -54,6 +54,4 @@ index.html         начална страница (търсене, катего
 _config.yml        настройки на Jekyll
 ```
 
-Старите Pelican файлове (`content/`, `themes/`, `api/`, `web-add/`, `*.py`, `Makefile` …) са изключени от билда чрез `exclude:` в `_config.yml` и могат да се изтрият, когато прецениш.
-
 Лиценз: GPLv3

@@ -1,0 +1,61 @@
+---
+layout: default
+title: "Изпрати виц"
+permalink: /submit/
+---
+<section class="hero">
+  <div class="wrap narrow">
+    <h1 class="hero-title">Изпрати виц</h1>
+    <p class="submit-intro">
+      Имаш хубав виц? Сподели го! След като го изпратиш, той се преглежда
+      и ако всичко е наред — се публикува тук.
+    </p>
+  </div>
+</section>
+
+<div class="wrap narrow">
+  <form id="joke-form" class="joke-form" novalidate>
+    <label class="field">
+      <span class="field-label">Категория</span>
+      {%- assign groups = site.jokes | group_by: "category" -%}
+      {%- assign order = "family,others,adults,work,ivancho,school" | split: "," -%}
+      <select id="f-category" name="category" required>
+        {% for slug in order %}
+          {%- assign g = groups | where: "name", slug | first -%}
+          {% if g %}<option value="{{ slug }}">{{ g.items[0].category_name }}</option>{% endif %}
+        {% endfor %}
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="field-label">Заглавие <span class="field-opt">(незадължително)</span></span>
+      <input id="f-title" name="title" type="text" maxlength="120" autocomplete="off"
+             placeholder="Кратко заглавие на вица">
+    </label>
+
+    <label class="field">
+      <span class="field-label">Виц</span>
+      <textarea id="f-body" name="body" rows="8" maxlength="4000" required
+                placeholder="Напиши вица тук…"></textarea>
+    </label>
+
+    <!-- Honeypot: hidden from people, tempting to bots. Leave empty. -->
+    <div class="hp-field" aria-hidden="true">
+      <label>Не попълвай това поле
+        <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </label>
+    </div>
+
+    <!-- Cloudflare Turnstile (anti-spam). Replace the data-sitekey below. -->
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAADsBEIKuxDdUUjoV" data-theme="auto"></div>
+
+    <div class="form-actions">
+      <button id="f-submit" type="submit" class="btn-random btn-submit">Изпрати виц</button>
+    </div>
+
+    <p id="submit-status" class="submit-status" aria-live="polite"></p>
+  </form>
+</div>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="{{ '/assets/js/submit.js' | relative_url }}" defer></script>
