@@ -2,7 +2,7 @@
   "use strict";
 
   // ── Configure this after deploying the Cloudflare Worker ──
-  var WORKER_URL = "fun-masoko-worker.masoko.workers.dev"; 
+  var WORKER_URL = "https://fun-masoko-worker.masoko.workers.dev";
 
   var form    = document.getElementById("joke-form");
   var statusEl = document.getElementById("submit-status");
