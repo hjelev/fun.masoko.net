@@ -86,7 +86,7 @@ export default {
     // 5) Build the markdown file.
     const slug = makeSlug(title) || ("submission-" + dateStamp() + "-" + rand(4));
     const path = "_jokes/" + slug + ".md";
-    const content = buildMarkdown({ title, category, body });
+    const content = buildMarkdown({ title, category, body: convertDashes(body) });
 
     // 6) Open the PR.
     try {
@@ -132,6 +132,20 @@ async function verifyTurnstile(secret, token, ip) {
   } catch {
     return false;
   }
+}
+
+// Leading "-" on a line is rendered by Markdown as a bullet list. Replace it
+// with the &minus; HTML entity so dialogue dashes display as plain dashes.
+// Also drop empty lines and append two trailing spaces to each remaining line
+// so Markdown renders a hard line break between consecutive lines.
+function convertDashes(body) {
+  return body
+    .split("\n")
+    .map((line) => line.replace(/^(\s*)[-–—](\s*)/, "$1&minus;$2"))
+    .map((line) => line.trimEnd())
+    .filter((line) => line !== "")
+    .map((line) => line + "  ")
+    .join("\n");
 }
 
 function yamlEscape(s) {
