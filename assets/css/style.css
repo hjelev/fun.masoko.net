@@ -283,6 +283,7 @@ a { color: inherit; }
 .site-footer p { color: var(--muted); font-size: .85rem; text-align: center; margin: 0; }
 .site-footer a { color: var(--muted); }
 .site-footer a:hover { color: var(--accent); }
+.site-footer .footer-icon { vertical-align: -2px; }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
