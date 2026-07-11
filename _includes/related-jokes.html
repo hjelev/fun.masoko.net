@@ -1,0 +1,11 @@
+{%- assign related = site.jokes | where_exp: "j", "j.category == page.category" | where_exp: "j", "j.url != page.url" | sample: 3 -%}
+{% if related.size > 0 %}
+<div class="related">
+  <h2 class="related-title">Още от „{{ page.category_name }}“</h2>
+  <ul class="related-list">
+    {% for j in related %}
+    <li><a href="{{ j.url | relative_url }}">{{ j.title }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

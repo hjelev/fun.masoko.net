@@ -11,5 +11,6 @@ layout: default
       {% for t in page.tags %}<span class="tag tag-plain">#{{ t }}</span>{% endfor %}
     </div>
   </article>
+  {% include related-jokes.html %}
   <p class="back"><a href="{{ '/' | relative_url }}">← Всички вицове</a></p>
 </div>
