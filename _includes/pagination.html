@@ -17,7 +17,7 @@
     {% if trail.num == paginator.page %}
       <span class="page-link is-current" aria-current="page">{{ trail.num }}</span>
     {% else %}
-      <a class="page-link" href="{{ trail.path | relative_url }}" title="{{ trail.title }}">{{ trail.num }}</a>
+      <a class="page-link" href="{{ trail.path | relative_url | remove: 'index.html' }}" title="{{ trail.title }}">{{ trail.num }}</a>
     {% endif %}
   {% endfor %}
 
@@ -25,7 +25,7 @@
   {% assign last_trail = paginator.page_trail | last %}
   {% if last_trail.num < paginator.total_pages %}
     {% if last_trail.num < paginator.total_pages | minus: 1 %}<span class="page-ellipsis" aria-hidden="true">…</span>{% endif %}
-    <a class="page-link" href="{{ paginator.last_path | relative_url }}" aria-label="Страница {{ paginator.total_pages }}">{{ paginator.total_pages }}</a>
+    <a class="page-link" href="{{ paginator.last_page_path | relative_url }}" aria-label="Страница {{ paginator.total_pages }}">{{ paginator.total_pages }}</a>
   {% endif %}
 
   {% if paginator.next_page %}
