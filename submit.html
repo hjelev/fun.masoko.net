@@ -18,11 +18,10 @@ permalink: /submit/
     <label class="field">
       <span class="field-label">Категория</span>
       {%- assign groups = site.jokes | group_by: "category" -%}
-      {%- assign order = "family,others,adults,work,ivancho,school" | split: "," -%}
       <select id="f-category" name="category" required>
-        {% for slug in order %}
-          {%- assign g = groups | where: "name", slug | first -%}
-          {% if g %}<option value="{{ slug }}">{{ g.items[0].category_name }}</option>{% endif %}
+        {% for c in site.data.categories %}
+          {%- assign g = groups | where: "name", c.slug | first -%}
+          {% if g %}<option value="{{ c.slug }}">{{ c.emoji }} {{ g.items[0].category_name }}</option>{% endif %}
         {% endfor %}
       </select>
     </label>

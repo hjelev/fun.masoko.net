@@ -1,16 +1,35 @@
 ---
 layout: default
 ---
+{%- assign cat = site.data.categories | where: "slug", page.category | first -%}
 <div class="wrap narrow">
   <p class="back"><a href="{{ '/' | relative_url }}">← Всички вицове</a></p>
-  <article class="card card-single">
+  <article class="card card-single" data-cat="{{ page.category }}" data-url="{{ page.url | relative_url }}" data-title="{{ page.title | escape }}">
     <h1 class="card-title">{{ page.title }}</h1>
     <div class="card-body">{{ content }}</div>
     <div class="card-meta">
-      <a class="tag" href="{{ '/c/' | append: page.category | append: '/' | relative_url }}">{{ page.category_name }}</a>
+      <a class="tag" href="{{ '/c/' | append: page.category | append: '/' | relative_url }}">{% if cat %}<span aria-hidden="true">{{ cat.emoji }}</span> {% endif %}{{ page.category_name }}</a>
       {% for t in page.tags %}<span class="tag tag-plain">#{{ t }}</span>{% endfor %}
+      {% include card-actions.html %}
     </div>
   </article>
+
+  <nav class="joke-nav" aria-label="Съседни вицове">
+    {% if page.next %}
+      <a class="joke-nav-link" href="{{ page.next.url | relative_url }}" rel="prev">
+        <span class="joke-nav-dir">‹ По-нов</span>
+        <span class="joke-nav-title">{{ page.next.title }}</span>
+      </a>
+    {% else %}<span></span>{% endif %}
+    <button class="btn-random joke-nav-random" type="button" data-random title="Случаен виц">{% include icon.html name="dice" %} <span>Случаен</span></button>
+    {% if page.previous %}
+      <a class="joke-nav-link is-next" href="{{ page.previous.url | relative_url }}" rel="next">
+        <span class="joke-nav-dir">По-стар ›</span>
+        <span class="joke-nav-title">{{ page.previous.title }}</span>
+      </a>
+    {% else %}<span></span>{% endif %}
+  </nav>
+  <p class="kbd-hint">Съвет: използвай <kbd>←</kbd> и <kbd>→</kbd> за навигация.</p>
+
   {% include related-jokes.html %}
-  <p class="back"><a href="{{ '/' | relative_url }}">← Всички вицове</a></p>
 </div>

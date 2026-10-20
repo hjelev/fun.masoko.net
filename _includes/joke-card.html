@@ -1,10 +1,11 @@
 {%- assign j = include.joke -%}
-<article class="card" data-cat="{{ j.category }}">
+{%- assign cat = site.data.categories | where: "slug", j.category | first -%}
+<article class="card" data-cat="{{ j.category }}" data-url="{{ j.url | relative_url }}" data-title="{{ j.title | escape }}">
   {% if j.title and j.title != "Виц" %}<h2 class="card-title"><a href="{{ j.url | relative_url }}">{{ j.title }}</a></h2>{% endif %}
   <div class="card-body">{{ j.content | markdownify }}</div>
   <div class="card-meta">
-    <a class="tag" href="{{ '/c/' | append: j.category | append: '/' | relative_url }}">{{ j.category_name }}</a>
+    <a class="tag" href="{{ '/c/' | append: j.category | append: '/' | relative_url }}">{% if cat %}<span aria-hidden="true">{{ cat.emoji }}</span> {% endif %}{{ j.category_name }}</a>
     {% for t in j.tags %}<span class="tag tag-plain">#{{ t }}</span>{% endfor %}
-    <a class="permalink" href="{{ j.url | relative_url }}" title="Връзка към този виц" aria-label="Постоянна връзка">#</a>
+    {% include card-actions.html url=j.url %}
   </div>
 </article>

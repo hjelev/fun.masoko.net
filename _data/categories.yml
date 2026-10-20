@@ -1,0 +1,14 @@
+# Display order and icon for each joke category. The human-readable name
+# comes from the jokes' own `category_name`; colours live in style.css.
+- slug: family
+  emoji: "👨‍👩‍👧"
+- slug: others
+  emoji: "🎭"
+- slug: adults
+  emoji: "🌶️"
+- slug: work
+  emoji: "💼"
+- slug: ivancho
+  emoji: "👦"
+- slug: school
+  emoji: "🏫"

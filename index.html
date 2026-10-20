@@ -12,7 +12,8 @@ pagination:
       <input id="search" type="search" inputmode="search" autocomplete="off"
              data-index="{{ '/search.json' | relative_url }}"
              placeholder="Търси във всички вицове…" aria-label="Търсене на вицове">
-      <button id="random" class="btn-random" type="button" title="Случаен виц">🎲 Случаен</button>
+      <kbd class="search-kbd" aria-hidden="true">/</kbd>
+      <button class="btn-random" type="button" data-random title="Случаен виц">{% include icon.html name="dice" %} <span class="btn-random-text">Случаен</span></button>
     </div>
 
     {% include category-nav.html %}
@@ -20,6 +21,13 @@ pagination:
 </section>
 
 <div class="wrap">
+  {% if paginator.page == 1 %}
+  <section id="daily" class="daily" hidden aria-labelledby="daily-title">
+    <h2 id="daily-title" class="section-label"><span aria-hidden="true">☀️</span> Виц на деня</h2>
+    <div id="daily-slot"></div>
+  </section>
+  {% endif %}
+
   <p id="status" class="result-status" aria-live="polite"></p>
 
   <div id="grid" class="grid">

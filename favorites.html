@@ -1,0 +1,21 @@
+---
+layout: default
+title: "Любими"
+permalink: /favorites/
+sitemap: false
+---
+<section class="hero">
+  <div class="wrap">
+    <p class="back"><a href="{{ '/' | relative_url }}">← Всички вицове</a></p>
+    <h1 class="hero-title">Любими</h1>
+    <p class="submit-intro">Вицовете, които си харесал със {% include icon.html name="heart" %}. Пазят се само в този браузър.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div id="fav-grid" class="grid" data-index="{{ '/search.json' | relative_url }}"></div>
+  <div id="fav-empty" class="empty" hidden>
+    <p>Все още нямаш любими вицове.</p>
+    <p><a class="btn-random" href="{{ '/' | relative_url }}">Разгледай вицовете</a></p>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<span class="card-actions">
+  <button class="act fav-btn" type="button" aria-pressed="false" aria-label="Добави в любими" title="Любими">{% include icon.html name="heart" %}</button>
+  <button class="act share-btn" type="button" aria-label="Сподели" title="Сподели">{% include icon.html name="share" %}</button>
+  {%- if include.url %}
+  <a class="act permalink" href="{{ include.url }}" title="Връзка към този виц" aria-label="Постоянна връзка">{% include icon.html name="link" %}</a>
+  {%- endif %}
+</span>
