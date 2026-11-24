@@ -8,6 +8,8 @@ sitemap: false
 {%- for j in jokes -%}
   {%- assign cat = site.data.categories | where: "slug", j.category | first -%}
   {%- assign body = j.content | markdownify | strip_html | normalize_whitespace -%}
+  {%- assign rendered = j.content | markdownify -%}
+  {%- capture html -%}{% include joke-body.html html=rendered %}{%- endcapture -%}
   {%- capture haystack -%}{{ j.title }} {{ j.category_name }} {{ j.tags | join: " " }} {{ body }}{%- endcapture -%}
   {
     "title": {{ j.title | jsonify }},
@@ -16,7 +18,7 @@ sitemap: false
     "emoji": {{ cat.emoji | jsonify }},
     "tags": {{ j.tags | jsonify }},
     "url": {{ j.url | relative_url | jsonify }},
-    "html": {{ j.content | markdownify | jsonify }},
+    "html": {{ html | jsonify }},
     "search": {{ haystack | downcase | jsonify }}
   }{%- unless forloop.last -%},{%- endunless -%}
 {%- endfor -%}

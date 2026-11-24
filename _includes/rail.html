@@ -1,0 +1,21 @@
+{%- comment -%}
+  Side column: heading, search, random joke, categories.
+  title, level ("h1" by default), intro (HTML), home (true on the front page).
+{%- endcomment -%}
+{%- assign level = include.level | default: "h1" -%}
+<aside class="rail">
+  <{{ level }} class="rail-title">{{ include.title }}</{{ level }}>
+  {% if include.intro %}<p class="rail-intro">{{ include.intro }}</p>{% endif %}
+
+  <form class="search-wrap" action="{{ '/' | relative_url }}" method="get" role="search">
+    <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+    <input id="search" name="q" type="search" inputmode="search" autocomplete="off"
+           data-index="{{ '/search.json' | relative_url }}"
+           placeholder="Търси във всички вицове" aria-label="Търсене на вицове">
+    <kbd class="search-kbd" aria-hidden="true">/</kbd>
+  </form>
+
+  <button class="btn btn-tear" type="button" data-random>{% if include.home %}Откъсни случаен виц{% else %}Случаен виц{% endif %}</button>
+
+  {% include category-nav.html home=include.home %}
+</aside>

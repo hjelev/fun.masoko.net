@@ -3,17 +3,16 @@ layout: default
 title: "Изпрати виц"
 permalink: /submit/
 ---
-<section class="hero">
-  <div class="wrap narrow">
-    <h1 class="hero-title">Изпрати виц</h1>
-    <p class="submit-intro">
-      Имаш хубав виц? Сподели го! След като го изпратиш, той се преглежда
-      и ако всичко е наред — се публикува тук.
-    </p>
-  </div>
-</section>
-
 <div class="wrap narrow">
+  <h1 class="page-title">Изпрати виц</h1>
+  <p class="rail-intro">
+    Имаш хубав виц? Сподели го! След като го изпратиш, той се преглежда
+    и ако всичко е наред, се публикува тук.
+  </p>
+
+  <div class="paper">
+  {% include roll.html %}
+  <div class="strip">
   <form id="joke-form" class="joke-form" novalidate>
     <label class="field">
       <span class="field-label">Категория</span>
@@ -49,11 +48,13 @@ permalink: /submit/
     <div class="cf-turnstile" data-sitekey="0x4AAAAAADsBEIKuxDdUUjoV" data-theme="auto"></div>
 
     <div class="form-actions">
-      <button id="f-submit" type="submit" class="btn-random btn-submit">Изпрати виц</button>
+      <button id="f-submit" type="submit" class="btn">Изпрати виц</button>
     </div>
 
     <p id="submit-status" class="submit-status" aria-live="polite"></p>
   </form>
+  </div>
+  </div>
 </div>
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>

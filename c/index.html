@@ -4,22 +4,20 @@ permalink: /c/
 title: "Категории"
 ---
 {%- assign groups = site.jokes | group_by: "category" -%}
-<section class="hero">
-  <div class="wrap">
-    <p class="back"><a href="{{ '/' | relative_url }}">← Всички вицове</a></p>
-    <h1 class="hero-title">Категории</h1>
-  </div>
-</section>
-
 <div class="wrap">
-  <div class="grid">
+  <h1 class="page-title">Категории</h1>
+
+  <div class="racks">
     {% for c in site.data.categories %}
       {%- assign g = groups | where: "name", c.slug | first -%}
       {% if g %}
-      <a class="card cat-card" data-cat="{{ c.slug }}" href="{{ '/c/' | append: c.slug | append: '/' | relative_url }}">
-        <span class="cat-emoji" aria-hidden="true">{{ c.emoji }}</span>
-        <h2 class="card-title">{{ g.items[0].category_name }}</h2>
-        <p class="cat-count">{{ g.items | size }} вица</p>
+      <a class="rack" data-tint="{{ c.slug }}" style="--n: {{ g.items | size }}" href="{{ '/c/' | append: c.slug | append: '/' | relative_url }}">
+        {% include roll.html %}
+        <span class="strip rack-strip">
+          <span class="rack-emoji" aria-hidden="true">{{ c.emoji }}</span>
+          <span class="rack-name">{{ g.items[0].category_name }}</span>
+          <span class="rack-count">{{ g.items | size }} вица</span>
+        </span>
       </a>
       {% endif %}
     {% endfor %}

@@ -1,20 +1,17 @@
 <!doctype html>
 <html lang="{{ site.lang | default: 'bg' }}">
 {% include head.html %}
-<body>
+<body{% if page.category %} data-tint="{{ page.category }}"{% endif %}>
   <a class="skip-link" href="#main">Към съдържанието</a>
 
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="brand" href="{{ '/' | relative_url }}">
         <img class="brand-logo" src="{{ '/assets/images/logo.png' | relative_url }}" alt="" width="40" height="40">
-        <span class="brand-text">
-          <span class="brand-name">{{ site.title }}</span>
-          <span class="brand-tag">{{ site.tagline }}</span>
-        </span>
+        <span class="brand-name">{{ site.title }}</span>
       </a>
       <div class="header-actions">
-      <a class="header-submit" href="{{ '/submit/' | relative_url }}" title="Изпрати свой виц">✍️ <span class="header-submit-text">Изпрати виц</span></a>
+      <a class="header-submit" href="{{ '/submit/' | relative_url }}" >Изпрати виц</a>
       <a class="icon-btn fav-link" href="{{ '/favorites/' | relative_url }}" aria-label="Любими вицове" title="Любими">{% include icon.html name="heart" %}<span class="fav-count" hidden></span></a>
       <button id="theme-toggle" class="icon-btn" type="button" aria-label="Смяна на тема" title="Светъл / тъмен режим">
         <svg class="i-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><g stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.5" y1="4.5" x2="6.6" y2="6.6"/><line x1="17.4" y1="17.4" x2="19.5" y2="19.5"/><line x1="4.5" y1="19.5" x2="6.6" y2="17.4"/><line x1="17.4" y1="6.6" x2="19.5" y2="4.5"/></g></svg>
@@ -30,7 +27,7 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>{{ site.jokes | size }} вица · <a href="https://github.com/hjelev/fun.masoko.net" aria-label="GitHub" title="Източник"><svg class="footer-icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a> · <a href="https://masoko.net">masoko.net</a> · GPLv3</p>
+      <ul class="footer-list"><li>{{ site.jokes | size }} вица</li><li><a href="https://masoko.net">masoko.net</a></li><li>GPLv3</li><li><a href="https://github.com/hjelev/fun.masoko.net" aria-label="GitHub" title="Източник"><svg class="footer-icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a></li></ul>
     </div>
   </footer>
 

@@ -1,6 +1,6 @@
 {%- assign groups = site.jokes | group_by: "category" -%}
 <nav class="chips" aria-label="Категории">
-  <a class="chip{% unless page.category %} is-active{% endunless %}" href="{{ '/' | relative_url }}">Всички <span class="count">{{ site.jokes | size }}</span></a>
+  <a class="chip{% if include.home %} is-active{% endif %}"{% if include.home %} aria-current="page"{% endif %} href="{{ '/' | relative_url }}"><span class="chip-emoji" aria-hidden="true">🧻</span> Всички <span class="count">{{ site.jokes | size }}</span></a>
   {% for c in site.data.categories %}
     {%- assign g = groups | where: "name", c.slug | first -%}
     {% if g %}

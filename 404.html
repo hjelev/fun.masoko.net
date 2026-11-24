@@ -3,10 +3,12 @@ layout: default
 title: Страницата не е намерена
 permalink: /404.html
 ---
-<div class="wrap narrow not-found">
-  <p class="not-found-emoji" aria-hidden="true">🙈</p>
-  <h1 class="not-found-title">404</h1>
-  <p class="result-status">Тази страница изчезна като добра шега.</p>
-  <p><button class="btn-random" type="button" data-random>{% include icon.html name="dice" %} Покажи ми случаен виц</button></p>
-  <p class="back"><a href="{{ '/' | relative_url }}">← Към всички вицове</a></p>
+<div class="wrap not-found">
+  {% include roll.html empty=true %}
+  <h1 class="page-title">Хартията свърши</h1>
+  <p class="rail-intro">Тази страница я няма (грешка 404). Вицовете обаче са още тук.</p>
+  <p class="not-found-actions">
+    <button class="btn" type="button" data-random>Случаен виц</button>
+    <a class="btn btn-quiet" href="{{ '/' | relative_url }}">Всички вицове</a>
+  </p>
 </div>

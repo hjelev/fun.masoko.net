@@ -1,0 +1,16 @@
+{%- comment -%}
+  Splits a rendered joke into one block per line so that dialogue gets a hanging
+  dash. Expects the joke's HTML in `include.html`.
+{%- endcomment -%}
+{%- assign line = '<span class="ln">' -%}
+{%- assign said = '<span class="ln is-said"><span class="dash">–&nbsp;</span>' -%}
+{%- assign next_line = '</span>' | append: line -%}
+{%- assign first_line = '<p>' | append: line -%}
+{%- assign body = include.html | normalize_whitespace | replace: '<br /> ', '<br />' | replace: '<p>', first_line | replace: '</p>', '</span></p>' | replace: '<br />', next_line -%}
+{%- assign dashes = '−|–|—|-' | split: '|' -%}
+{%- for d in dashes -%}
+  {%- assign spaced = line | append: d | append: ' ' -%}
+  {%- assign tight = line | append: d -%}
+  {%- assign body = body | replace: spaced, said | replace: tight, said -%}
+{%- endfor -%}
+{{ body }}

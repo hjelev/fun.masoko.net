@@ -10,17 +10,25 @@
   function currentTheme() {
     return root.getAttribute("data-theme") || (systemDark() ? "dark" : "light");
   }
+  // Match the browser chrome to the wall colour of the current page and theme.
+  function syncThemeColor() {
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", getComputedStyle(document.body).backgroundColor);
+  }
   if (toggle) {
     toggle.addEventListener("click", function () {
       var next = currentTheme() === "dark" ? "light" : "dark";
       root.setAttribute("data-theme", next);
       try { localStorage.setItem("theme", next); } catch (e) {}
+      syncThemeColor();
     });
   }
+  syncThemeColor();
   // Follow the OS if the user has not pinned a preference.
   if (window.matchMedia) {
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
       try { if (!localStorage.getItem("theme")) root.removeAttribute("data-theme"); } catch (e) {}
+      syncThemeColor();
     });
   }
 
@@ -91,24 +99,24 @@
       "</div></article>";
   }
 
-  // Add a "…" expander to any clamped card whose text overflows 3 lines.
+  // Fold only the really long jokes; everything else shows its punchline.
   function setupClamp(scope) {
-    var cards = (scope || document).querySelectorAll(".card:not(.card-single)");
+    var cards = (scope || document).querySelectorAll(".card:not(.card-single):not(.card-daily)");
     Array.prototype.forEach.call(cards, function (card) {
       var body = card.querySelector(".card-body");
-      if (!body || card.classList.contains("is-expanded")) return;
-      if (body.querySelector(".card-more")) return;
-      if (body.scrollHeight - body.clientHeight <= 1) return;
+      if (!body || card.classList.contains("is-folded") || card.querySelector(".card-more")) return;
+      var lines = body.scrollHeight / parseFloat(getComputedStyle(body).lineHeight);
+      if (lines < 22) return;
+      card.classList.add("is-folded");
       var btn = document.createElement("button");
       btn.className = "card-more";
       btn.type = "button";
-      btn.setAttribute("aria-label", "Прочети целия виц");
-      btn.textContent = "…";
+      btn.textContent = "Прочети целия виц";
       btn.addEventListener("click", function () {
-        card.classList.add("is-expanded");
-        btn.remove();
+        card.classList.remove("is-folded");
+        btn.hidden = true;
       });
-      body.appendChild(btn);
+      body.insertAdjacentElement("afterend", btn);
     });
   }
 
@@ -142,10 +150,8 @@
   function cardText(card) {
     var body = card.querySelector(".card-body");
     if (!body) return "";
-    var clone = body.cloneNode(true);
-    var more = clone.querySelector(".card-more");
-    if (more) more.remove();
-    return (clone.innerText || clone.textContent || "").trim();
+    // Read from the live element: innerText needs layout to keep the line breaks.
+    return (body.innerText || body.textContent || "").replace(/\u00a0/g, " ").trim();
   }
   function copyText(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
@@ -171,19 +177,71 @@
       return;
     }
     copyText(text + "\n\n" + url).then(
-      function () { toast("Вицът е копиран 📋"); },
+      function () { toast("Вицът е копиран"); },
       function () { toast("Неуспешно копиране"); }
     );
   }
 
-  /* ---------- Random joke: jump to a random joke page ---------- */
+  /* ---------- Random joke ---------- */
+  // On the front page the top sheet is torn off and a new one rolls out in its
+  // place. Everywhere else we jump to a random joke's own page.
+  var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var dailySlot = document.getElementById("daily-slot");
+
+  function showFeatured(j) {
+    dailySlot.innerHTML = cardHtml(j, "card-daily");
+    syncFavs(dailySlot);
+  }
+
+  function tearOff(j) {
+    if (search && search.value) {
+      search.value = "";
+      setQueryParam("");
+    }
+    showBrowse();
+    var old = dailySlot.querySelector(".card");
+    if (daily.getBoundingClientRect().top < 0 || daily.getBoundingClientRect().top > window.innerHeight * 0.6) {
+      window.scrollTo(0, window.scrollY + daily.getBoundingClientRect().top - 120);
+    }
+    var torn = null;
+    if (old && !reducedMotion && old.animate) {
+      var box = old.getBoundingClientRect();
+      torn = old.cloneNode(true);
+      torn.classList.add("torn");
+      torn.setAttribute("aria-hidden", "true");
+      torn.setAttribute("inert", "");
+      torn.style.left = box.left + "px";
+      torn.style.top = box.top + "px";
+      torn.style.width = box.width + "px";
+      document.body.appendChild(torn);
+      torn.animate([
+        { transform: "none", easing: "ease-out" },
+        { transform: "translateY(14px) rotate(-2.5deg)", offset: 0.22, easing: "ease-in" },
+        { transform: "translate(-50px, 110vh) rotate(-16deg)" }
+      ], { duration: 750, fill: "forwards" }).onfinish = function () { torn.remove(); };
+    }
+    dailySlot.setAttribute("aria-live", "polite");
+    document.getElementById("daily-title").textContent = "Случаен виц";
+    showFeatured(j);
+    daily.hidden = false;
+    if (torn) {
+      dailySlot.firstElementChild.animate(
+        [{ transform: "translateY(-100%)" }, { transform: "none" }],
+        { duration: 520, delay: 160, fill: "backwards", easing: "cubic-bezier(.2,.8,.2,1)" }
+      );
+    }
+  }
+
   function goRandom() {
     loadIndex().then(function (idx) {
       if (!idx.length) return;
+      var shown = dailySlot && dailySlot.querySelector(".card");
+      var current = shown ? shown.getAttribute("data-url") : location.pathname;
       var pick;
       do { pick = idx[Math.floor(Math.random() * idx.length)]; }
-      while (idx.length > 1 && pick.url === location.pathname);
-      window.location.href = pick.url;
+      while (idx.length > 1 && pick.url === current);
+      if (dailySlot) tearOff(pick);
+      else window.location.href = pick.url;
     });
   }
 
@@ -198,7 +256,7 @@
       if (!url) return;
       var favs = readFavs();
       var i = favs.indexOf(url);
-      if (i === -1) { favs.unshift(url); toast("Добавен в любими ❤️"); }
+      if (i === -1) { favs.unshift(url); toast("Добавен в любими"); }
       else { favs.splice(i, 1); toast("Премахнат от любими"); }
       writeFavs(favs);
       syncFavs();
@@ -220,7 +278,7 @@
     var walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, null);
     while (walker.nextNode()) {
       var n = walker.currentNode;
-      if (n.parentNode.closest(".card-actions, .tag")) continue;
+      if (n.parentNode.closest(".card-actions, .tag, .dash")) continue;
       re.lastIndex = 0;
       if (re.test(n.nodeValue)) nodes.push(n);
     }
@@ -284,7 +342,9 @@
     });
   }
 
-  if (search) {
+  // Pages without a results list just submit the form to the front page.
+  if (search && results) {
+    search.form.addEventListener("submit", function (e) { e.preventDefault(); runSearch(search.value); });
     var debounce = null;
     search.addEventListener("input", function () {
       clearTimeout(debounce);
@@ -312,8 +372,8 @@
       var day = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5);
       // Spread consecutive days across the collection instead of walking it in order.
       var pick = idx[(day * 7919) % idx.length];
-      document.getElementById("daily-slot").innerHTML = cardHtml(pick, "card-daily is-expanded");
-      syncFavs(daily);
+      if (dailySlot.querySelector(".card")) return; // a random joke got here first
+      showFeatured(pick);
       if (!search || !search.value.trim()) daily.hidden = false;
     });
   }
@@ -369,7 +429,11 @@
 
   syncFavs();
 
-  /* ---------- Clamp jokes to 3 lines with a "…" expander ---------- */
+  // On small screens the categories scroll sideways: bring the current one into view.
+  var chip = document.querySelector(".chip.is-active");
+  if (chip) chip.parentNode.scrollLeft = chip.offsetLeft - chip.parentNode.offsetLeft - 20;
+
+  /* ---------- Fold very long jokes once the web font has settled ---------- */
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
     setupClamp(document);
   });

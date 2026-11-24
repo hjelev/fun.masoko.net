@@ -1,20 +1,19 @@
 ---
 layout: default
 ---
-<section class="hero">
-  <div class="wrap">
-    <p class="back"><a href="{{ '/' | relative_url }}">← Всички вицове</a></p>
-    <h1 class="hero-title">{{ page.category_name }}</h1>
-    {% include category-nav.html %}
-  </div>
-</section>
+<div class="wrap layout">
+  {% include rail.html title=page.category_name %}
 
-<div class="wrap">
-  <div id="grid" class="grid">
-    {% for j in paginator.posts %}
-      {% include joke-card.html joke=j %}
-    {% endfor %}
-  </div>
+  <div class="paper">
+    {% include roll.html %}
+    <div class="strip">
+      <div id="grid" class="grid">
+        {% for j in paginator.posts %}
+          {% include joke-card.html joke=j %}
+        {% endfor %}
+      </div>
 
-  {% include pagination.html %}
+      {% include pagination.html %}
+    </div>
+  </div>
 </div>

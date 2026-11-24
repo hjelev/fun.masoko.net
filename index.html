@@ -3,41 +3,33 @@ layout: default
 pagination:
   enabled: true
 ---
-<section class="hero">
-  <div class="wrap">
-    <h1 class="hero-title">{{ site.tagline }}</h1>
+<div class="wrap layout">
+  {% include rail.html title=site.tagline home=true %}
 
-    <div class="search-wrap">
-      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-      <input id="search" type="search" inputmode="search" autocomplete="off"
-             data-index="{{ '/search.json' | relative_url }}"
-             placeholder="Търси във всички вицове…" aria-label="Търсене на вицове">
-      <kbd class="search-kbd" aria-hidden="true">/</kbd>
-      <button class="btn-random" type="button" data-random title="Случаен виц">{% include icon.html name="dice" %} <span class="btn-random-text">Случаен</span></button>
+  <div class="paper">
+    {% include roll.html %}
+    <div class="strip">
+      {% if paginator.page == 1 %}
+      <section id="daily" class="daily" hidden aria-labelledby="daily-title">
+        <div class="daily-inner">
+          <h2 id="daily-title" class="daily-label">Виц на деня</h2>
+          <div id="daily-slot"></div>
+        </div>
+      </section>
+      {% endif %}
+
+      <p id="status" class="result-status" aria-live="polite"></p>
+
+      <div id="grid" class="grid">
+        {% for j in paginator.posts %}
+          {% include joke-card.html joke=j %}
+        {% endfor %}
+      </div>
+
+      <div id="results" class="grid" hidden></div>
+      <p id="empty" class="empty" hidden>Няма намерени вицове. Опитай с друга дума.</p>
+
+      {% include pagination.html %}
     </div>
-
-    {% include category-nav.html %}
   </div>
-</section>
-
-<div class="wrap">
-  {% if paginator.page == 1 %}
-  <section id="daily" class="daily" hidden aria-labelledby="daily-title">
-    <h2 id="daily-title" class="section-label"><span aria-hidden="true">☀️</span> Виц на деня</h2>
-    <div id="daily-slot"></div>
-  </section>
-  {% endif %}
-
-  <p id="status" class="result-status" aria-live="polite"></p>
-
-  <div id="grid" class="grid">
-    {% for j in paginator.posts %}
-      {% include joke-card.html joke=j %}
-    {% endfor %}
-  </div>
-
-  <div id="results" class="grid" hidden></div>
-  <p id="empty" class="empty" hidden>Няма намерени вицове. Опитай друга дума.</p>
-
-  {% include pagination.html %}
 </div>
